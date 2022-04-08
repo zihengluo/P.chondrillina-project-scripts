@@ -2,11 +2,12 @@
 
 ## Genome assembly
 
-1, Base calling:
+1, Base calling
 guppy_basecaller -i {path to directory of fast5 files} -s {output directory} -c dna_r9.4.1_450bps_sup.cfg --device auto —-min_qscore 7
+
 Version: guppy_basecaller 5.0.11
 
-2, Flye genome assembly:
+2, Flye genome assembly
 flye --nano-raw longreads.fastq -o {output directory} -t {num}
 Version: Flye 2.8.1
 
@@ -17,13 +18,13 @@ medaka consensus -i longreads.fastq -d racon_assembly.fasta -o {output directory
 Version: minimap2 2.2.2, racon 1.4.20, medaka 1.4.4
 
 4, short reads polishing
-set the path to short reads:
+set the path to short reads
 realpath forward_paired-end_shortreads.fq,gz reverse_paired-end_shortreads.fq.gz >sgs.fofn
 
-create a file to set up the polishing steps:
+create a file to set up the polishing steps
 nano run.cfg
 
-Here is the content of run.cfg:
+Here is the content of run.cfg
 ***********************************************
 [General]
 job_type = local
@@ -42,5 +43,5 @@ polish_options = -p {multithread_jobs}
 sgs_fofn = sgs.fofn
 sgs_options = -max_depth 100 -minimap2
 ***********************************************
-run the polihing steps:
+run the polihing steps
 nextPolish run2.cfg
