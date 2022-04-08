@@ -10,13 +10,15 @@ Version: guppy_ba
 
 basecaller 5.0.11
 
-2, Flye genome assembly
+2, Flye genome assembly and quality control
 
 flye --nano-raw longreads.fastq -o {output directory} -t {num}
 
+
+
 Version: Flye 2.8.1
 
-3, long reads polishing 
+3, long reads polishing with racon and medaka
 
 minimap2 -ax map-ont -t {num} assembly.fasta longreads.fastq > longread_map.sam
 
@@ -26,7 +28,9 @@ medaka consensus -i longreads.fastq -d racon_assembly.fasta -o {output directory
 
 Version: minimap2 2.2.2, racon 1.4.20, medaka 1.4.4
 
-4, short reads polishing
+4, trim short read
+
+5, short reads polishing with nextPolish
 
 set the path to short reads
 
@@ -57,4 +61,9 @@ sgs_options = -max_depth 100 -minimap2
 run the polihing steps:
 nextPolish run2.cfg
 
+Version: nextPolish 1.4.0
 
+5, short reads polishing with Hapo-g
+
+
+Version: Hapo-g 1.2 
