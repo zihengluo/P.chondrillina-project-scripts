@@ -3,6 +3,7 @@
 ## Genome assembly
 
 1, Base calling
+
 guppy_basecaller -i {path to directory of fast5 files} -s {output directory} -c dna_r9.4.1_450bps_sup.cfg --device auto —-min_qscore 7
 
 Version: guppy_basecaller 5.0.11
