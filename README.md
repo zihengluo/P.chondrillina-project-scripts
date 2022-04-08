@@ -17,9 +17,10 @@ medaka consensus -i longreads.fastq -d racon_assembly.fasta -o {output directory
 Version: minimap2 2.2.2, racon 1.4.20, medaka 1.4.4
 
 4, short reads polishing
+set the path to short reads:
 realpath forward_paired-end_shortreads.fq,gz reverse_paired-end_shortreads.fq.gz >sgs.fofn
 
-*create a file to set up the polishing steps
+create a file to set up the polishing steps:
 nano run.cfg
 
 Here is the content of run.cfg:
