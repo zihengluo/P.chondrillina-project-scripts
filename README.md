@@ -23,7 +23,7 @@ realpath forward_paired-end_shortreads.fq,gz reverse_paired-end_shortreads.fq.gz
 nano run.cfg
 
 Here is the content of run.cfg:
-----------------------------------------------
+***********************************************
 [General]
 job_type = local
 job_prefix = nextPolish
@@ -40,6 +40,6 @@ polish_options = -p {multithread_jobs}
 [sgs_option] #optional
 sgs_fofn = sgs.fofn
 sgs_options = -max_depth 100 -minimap2
-----------------------------------------------
-* run the polihing steps
+***********************************************
+run the polihing steps:
 nextPolish run2.cfg
