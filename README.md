@@ -6,15 +6,13 @@
 
 guppy_basecaller -i {path to directory of fast5 files} -s {output directory} -c dna_r9.4.1_450bps_sup.cfg --device auto —-min_qscore 7
 
-Version: guppy_ba
+NanoPlot --summary sequencing_summary.txt -o {output folder}
 
-basecaller 5.0.11
+Version: guppy_basecaller 5.0.11, NanoPlot 1.32.1
 
-2, Flye genome assembly and quality control
+2, Flye genome assembly
 
 flye --nano-raw longreads.fastq -o {output directory} -t {num}
-
-
 
 Version: Flye 2.8.1
 
@@ -87,7 +85,17 @@ python3 hapog.py -g assembly.fasta --pe1 output_shortread1_paired.fq.gz --pe2 ou
 
 Version: Hapo-g 1.2 
 
-6, blast on contigs
+6, statistic summary of assembly
+
+ststs.sh in=assembly.fasta
+
+Version: bbmap 38.93
+
+7, use BUSCO to test completeness of assembly
+
+busco --offline -f -m genome -l basidiomycota_odb10 -c {num} -i assembly.fasta -o {output folder}
+
+8, blast on contigs
 
 download nt databese:
 
@@ -130,10 +138,23 @@ blastn -db $DB/nt \
        
 Version: Blast 2.12.0
 
-7, extract subset sequences from assembly:
+9, extract subset sequences from assembly:
 
 seqtk subseq asssembly.fast contig_names.lst > subset.fasta
 
 Version: suqtk 1.3
 
-8, 
+10, mapping reads against assembly without secondary alignments:
+
+For nanopore longread data:
+
+minimap2 -ax map-ont --secondary=no -t {num} assembly.fasta longreads.fastq | samtools sort -@ {num} -O BAM -o {name of mapping file}.bam
+
+For paired-end shortread data:
+
+minimap2 -ax sr --secondary=no -t {num} assembly.fasta shortread1.fq shortread2.fq | samtools sort -@ {num} -O BAM -o {name of mapping file}.bam
+
+Version: minimap2 2.17 samtools 1.3.1
+
+11, Use blobtools to visualize the taxonomic clssification of contigs, GC content, and coverage of assembly
+
