@@ -86,3 +86,26 @@ python3 hapog.py -g assembly.fasta --pe1 output_shortread1_paired.fq.gz --pe2 ou
 {outputpath} -t {num}
 
 Version: Hapo-g 1.2 
+
+6, blast on contigs
+
+download nt databese:
+
+mkdir -p nt \
+wget "ftp://ftp.ncbi.nlm.nih.gov/blast/db/nt.??.tar.gz" -P nt/ && \
+        for file in nt/*.tar.gz; \
+            do tar xf $file -C nt && rm $file; \
+        done
+
+blastn on assembly:
+
+blastn -db $DB/nt \
+       -query assembly.fasta \
+       -outfmt "6 qseqid staxids bitscore std" \
+       -max_target_seqs 10 \
+       -max_hsps 1 \
+       -evalue 1e-25 \
+       -num_threads 96 \
+       -out assembly.nextpolish.ncbi.blastn.out
+       
+       
