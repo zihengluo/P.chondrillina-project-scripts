@@ -29,6 +29,15 @@ medaka consensus -i longreads.fastq -d racon_assembly.fasta -o {output directory
 Version: minimap2 2.2.2, racon 1.4.20, medaka 1.4.4
 
 4, trim short read
+trimmomatic PE -threads {num} \
+-phred33 \
+shortread1.fq.gz \
+shortread2.fq.gz \
+output_shortread1_paired.fq.gz output_shortread2_unpaired.fq.gz \
+output_shortread2_paired.fq.gz \ output_shortread2_unpaired.fq.gz \
+ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 \
+LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 HEADCROP:3 MINLEN:36
+
 
 5, short reads polishing with nextPolish
 
