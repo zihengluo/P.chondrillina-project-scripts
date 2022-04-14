@@ -42,21 +42,35 @@ nano run.cfg
 Here is the content of run.cfg
 ***********************************************
 [General]
+
 job_type = local
+
 job_prefix = nextPolish
+
 task = 1212
+
 rewrite = yes
+
 rerun = 3
+
 parallel_jobs = 4
+
 multithread_jobs = 12
+
 genome ={path to assembly file}
+
 genome_size = auto
+
 workdir ={working directory}
+
 polish_options = -p {multithread_jobs}
 
 [sgs_option] #optional
+
 sgs_fofn = sgs.fofn
+
 sgs_options = -max_depth 100 -minimap2
+
 ***********************************************
 run the polihing steps:
 nextPolish run2.cfg
