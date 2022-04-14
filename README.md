@@ -99,6 +99,8 @@ wget "ftp://ftp.ncbi.nlm.nih.gov/blast/db/nt.??.tar.gz" -P nt/ && \
 
 blastn on assembly:
 
+DB = nt
+
 blastn -db $DB/nt \
        -query assembly.fasta \
        -outfmt "6 qseqid staxids bitscore std" \
@@ -109,3 +111,14 @@ blastn -db $DB/nt \
        -out assembly.nextpolish.ncbi.blastn.out
        
        
+download mitochondrial database:
+wgaet https://ftp.ncbi.nlm.nih.gov/blast/db/mito.tar.gz
+
+blastn -db $DB/nt \
+       -query assembly.fasta \
+       -outfmt "6 qseqid staxids bitscore std" \
+       -max_target_seqs 10 \
+       -max_hsps 1 \
+       -evalue 1e-25 \
+       -num_threads 96 \
+       -out assembly.nextpolish.ncbi.blastn.out
