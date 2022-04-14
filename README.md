@@ -158,3 +158,8 @@ Version: minimap2 2.17 samtools 1.3.1
 
 11, Use blobtools to visualize the taxonomic clssification of contigs, GC content, and coverage of assembly
 
+python blobtools create -i assembly.fasta -b longreadmap.bam -t assembly.ncbi.blastn.out -o {output folder} --taxrule bestsumorder --db nodesDB.txt
+
+python blobtools view -i {path to blobtools create output directory}/blobtools.blobDB.json  -o {output directory} -x bestsumorder -r 'order'
+
+python blobtools plot  -i {path to blobtools create output directory}/blobtools.blobDB.json  -r order -x bestsumorder -o {output directory}
