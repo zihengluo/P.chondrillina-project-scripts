@@ -107,18 +107,33 @@ blastn -db $DB/nt \
        -max_target_seqs 10 \
        -max_hsps 1 \
        -evalue 1e-25 \
-       -num_threads 96 \
-       -out assembly.nextpolish.ncbi.blastn.out
+       -num_threads {num} \
+       -out {output name}
        
        
 download mitochondrial database:
-wgaet https://ftp.ncbi.nlm.nih.gov/blast/db/mito.tar.gz
 
+wget https://ftp.ncbi.nlm.nih.gov/blast/db/mito.tar.gz
+tar –xvzf mito.tar.gz
+
+blastn on mitochondrial contigs:
+
+DB = mito
 blastn -db $DB/nt \
        -query assembly.fasta \
        -outfmt "6 qseqid staxids bitscore std" \
        -max_target_seqs 10 \
        -max_hsps 1 \
        -evalue 1e-25 \
-       -num_threads 96 \
-       -out assembly.nextpolish.ncbi.blastn.out
+       -num_threads {num} \
+       -out {output name}
+       
+Version: Blast 2.12.0
+
+7, extract subset sequences from assembly:
+
+seqtk subseq asssembly.fast contig_names.lst > subset.fasta
+
+Version: suqtk 1.3
+
+8, 
