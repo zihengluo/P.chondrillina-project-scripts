@@ -26,10 +26,14 @@ medaka consensus -i longreads.fastq -d racon_assembly.fasta -o {output directory
 
 Version: minimap2 2.2.2, racon 1.4.20, medaka 1.4.4
 
-4, trim short read
+4, trim short reads and quality control on reads
 
 trimmomatic PE -threads {num} -phred33 shortread1.fq.gz shortread2.fq.gz output_shortread1_paired.fq.gz output_shortread2_unpaired.fq.gz
 output_shortread2_paired.fq.gz  output_shortread2_unpaired.fq.gz ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 HEADCROP:3 MINLEN:36
+
+fastqc -t {num} -o {output folder}
+
+Version: trimmomatic 0.39 fastqc 0.11.9
 
 5, short reads polishing with nextPolish
 
@@ -95,6 +99,8 @@ Version: bbmap 38.93
 
 busco --offline -f -m genome -l basidiomycota_odb10 -c {num} -i assembly.fasta -o {output folder}
 
+Version: Busco 5.2.2
+
 8, blast on contigs
 
 download nt databese:
@@ -156,10 +162,28 @@ minimap2 -ax sr --secondary=no -t {num} assembly.fasta shortread1.fq shortread2.
 
 Version: minimap2 2.17 samtools 1.3.1
 
-11, Use blobtools to visualize the taxonomic clssification of contigs, GC content, and coverage of assembly
+11, extract unmapped reads from bam file and tranfer bam to fastq
+
+samtools view -@ {num} -f 4 -b map.bam > unmappedreads.bam
+
+samtools sort -@ {num} -n -o unmappedreadsort.bam unmappedreads.bam
+
+bamToFastq -i unmappedreadsort.bam -fq unmappedread1.fq -fq2 unmappedread2.fq
+
+Version: samtools 1.3.1 bedtools 2.30.0
+
+12, Use blobtools to visualize the taxonomic clssification of contigs, GC content, and coverage of assembly
 
 python blobtools create -i assembly.fasta -b longreadmap.bam -t assembly.ncbi.blastn.out -o {output folder} --taxrule bestsumorder --db nodesDB.txt
 
 python blobtools view -i {path to blobtools create output directory}/blobtools.blobDB.json  -o {output directory} -x bestsumorder -r 'order'
 
 python blobtools plot  -i {path to blobtools create output directory}/blobtools.blobDB.json  -r order -x bestsumorder -o {output directory}
+
+Version: blobtools 1.1.1
+
+13, use deeptools to calculate the coverage of reads on assembly
+
+plotCoverage -b longreadmap.bam -p {num} --plotfile {filename}.png
+
+Version: 3.5.1
