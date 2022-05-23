@@ -1,1 +1,24 @@
+Divide the genome-wide SNPs into subsets based on contigs with command line:
 
+Get all the contigs names into a list called contig_names, 
+get the header of every vcf file into vcf_header, 
+divide the whole vcf into subset files, 
+each one contains SNPs of one contig.
+
+'''
+grep -v "^#" input.vcf | cut -f1 | sort | uniq > contig_names
+grep "^#" input.vcf > vcf_header
+
+while read line
+do
+grep -v "^#" input.vcf  | awk -v contig=$line '{ if ( $1==contig ) print }' | cat vcf_header - > $line.vcf
+done < contig_names
+'''
+
+Create directories for each SNPs subset and move each subset into its directory,
+This step will make it easy to import SNPs into R studio by Popgenome
+
+'''
+for %i in (*) do mkdir "%~ni"
+for %i in (*) do move "%i" "%~ni"
+'''
