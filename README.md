@@ -1,4 +1,7 @@
 # P.chondrillina-project-scripts
 
-## Genome assembly & population structure & genome scans
+## The command lines and programming script used in this project are divided into three parts:
+### 1, Genome assembly,
+### 2, population structure &
+### 3, genome scans
 
