@@ -1,0 +1,49 @@
+# A good handbook can be found at: https://readthedocs.org/projects/ngs-course/downloads/pdf/praha-january-2017/
+# The command lines used in this study soured from the above handbook
+
+# First, prepare three txt files contain the isolates names in each subpopoulation and a reference genome index file
+IN=/home/ziheng/genoem_scan/nolowcovflt_S3_1.vcf 
+POP1=pop1.txt
+POP2=pop2.txt
+POP3=pop3.txt
+GENOME=/home/ziheng/genoem_scan/subgenome859.fa.fai
+
+# Calculate Fst and specify which two subpopulation were involved,
+# Three subpopulation in this study need three pairwise calculations.
+vcftools --vcf $IN \
+  --weir-fst-pop $POP1 \
+  --weir-fst-pop $POP2 \
+  --stdout |
+  tail -n +2 |
+  awk -F $'\t' 'BEGIN{OFS=FS}{print $1,$2-1,$2,$1":"$2,$3}' \
+  > pop12_fst.bed
+
+# transfer the file into a standard bed file format
+sed -i 's/-nan/0/g' pop12_fst.bed
+
+
+# make sliding windows, size 20kb, step 10kb
+bedtools makewindows \
+           -g $GENOME \
+           -w 20000 \
+           -s 10000 |
+awk -F $'\t' 'BEGIN{OFS=FS}{print $0,"20kb"}' \
+>windows_20kb.bed 
+
+# combine the sliding window with Fst values
+bedtools intersect \
+-a windows_20kb.bed  \
+-b pop23_fst.bed  -wa -wb \
+>windows_fst.tab
+
+# calcuate the mean Fst value in each window
+sort -k4,4 -k1,1 -k2,2n windows_fst.tab |
+groupBy -i - \
+-g 4,1,2,3 \
+-c 9 \
+-o mean > windows_mean_fst.tab
+
+# calculate Tajima's D in each subpopulation, use subpop.txt to specify which subpopulation is being calculated
+# Sliding window size is 20kb.
+Vcftools —vcf file.vcf —keep subpop.txt —recode
+vcftools --vcf nolowcovflt_S3_1.vcf --out tajimasd --TajimaD 20000
