@@ -2,48 +2,49 @@
 
 ## Genome assembly
 
-1, Base calling
-
+1, Base calling and qulity control
+'''
 guppy_basecaller -i {path to directory of fast5 files} -s {output directory} -c dna_r9.4.1_450bps_sup.cfg --device auto —-min_qscore 7
 
 NanoPlot --summary sequencing_summary.txt -o {output folder}
-
+'''
 Version: guppy_basecaller 5.0.11, NanoPlot 1.32.1
 
 2, Flye genome assembly
-
+'''
 flye --nano-raw longreads.fastq -o {output directory} -t {num}
-
+'''
 Version: Flye 2.8.1
 
 3, long reads polishing with racon and medaka
-
+'''
 minimap2 -ax map-ont -t {num} assembly.fasta longreads.fastq > longread_map.sam
 
 racon -t {num} -u -m 8 -x -6 -g -8 -w 500 longreads.fastq longread_map.sam assembly.fasta > racon_assembly.fasta
 
 medaka consensus -i longreads.fastq -d racon_assembly.fasta -o {output directory} -m r941_min_sup_g507
-
+'''
 Version: minimap2 2.2.2, racon 1.4.20, medaka 1.4.4
 
 4, trim short reads and quality control on reads
-
+'''
 trimmomatic PE -threads {num} -phred33 shortread1.fq.gz shortread2.fq.gz output_shortread1_paired.fq.gz output_shortread2_unpaired.fq.gz
 output_shortread2_paired.fq.gz  output_shortread2_unpaired.fq.gz ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 HEADCROP:3 MINLEN:36
 
 fastqc -t {num} -o {output folder}
-
+'''
 Version: trimmomatic 0.39 fastqc 0.11.9
 
 5, short reads polishing with nextPolish
 
 set the path to short reads
-
+'''
 realpath output_shortread1_paired.fq.gz output_shortread2_paired.fq.gz >sgs.fofn
-
+'''
 create a file to set up the polishing steps:
+'''
 nano run.cfg
-
+'''
 Here is the content of run.cfg
 ***********************************************
 [General]
