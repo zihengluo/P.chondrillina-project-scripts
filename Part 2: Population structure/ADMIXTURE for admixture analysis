@@ -1,0 +1,3 @@
+1, Convert vcf to bed:
+* Plink bed file is a binary biallelic genotype table
+plink --vcf nolowcovflt_S3_1.vcf.gz --make-bed --geno 0.999 --allow-extra-chr --out geno999
