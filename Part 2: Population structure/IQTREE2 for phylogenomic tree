@@ -1,1 +1,39 @@
+IQ-TREE multicore version 2.0.3 for Linux 64-bit built Dec 20 2020
 
+1, convert vcf to phy https://github.com/edgardomortiz/vcf2phylip
+
+'''
+python vcf2phylip.py -i myfile.vcf
+'''
+
+2, test the assumptions of stationarity and homogeneity.
+
+'''
+iqtree2 -s myfile.phy --symtest-only
+'''
+
+3, create phylogenomic tree
+
+# +ASC: ascertainment bias correction model
+bias, systematic deviation of population genetic statistics, caused by 
+sampling a nonrandom set of individuals or by biased SNP discovery protocols. Unless the 
+whole genome of every individual in a population is sequenced there will always be some 
+form of SNP ascertainment bias. +ASC will correct the likelihood conditioned on variable
+sites. Without +ASC, the branch lengths might be overestimated. doi:10.1002/bies.201300014
+
+# GTR: general time reversible model assumes different rates of substitution for each pair of nucleotides, 
+in addition to assuming different frequencies of occurrence of nucleotides.https://doi.org/10.1016/C2012-0-07153-0
+
+# if without -st DNA, ERROR: File not found GTR.
+IQ-TREE mis-detected your alignment because the fraction of A,C,G,T characters is too low, which is not surprising with SNP data. 
+You can use option -st DNA to override this (incorrect) auto-detection.GTR+ASC model automatically filter out all invariant sites.
+
+# -B 1000: ultrafast bootstrap approximation (UFBoot) with 1,000 replicates 
+
+# -alrt 1000: likelihood-ratio tests (aLRT) with 1,000 replicates 
+
+# -nt thread number
+
+'''
+iqtree -s myfile.phy -m GTR+ASC -st DNA  -B 1000 -alrt 1000  -nt 16
+'''
