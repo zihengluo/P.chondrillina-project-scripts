@@ -14,5 +14,6 @@ for K in 1 2 3 4 5; \ do admixture --cv {name}.bed $K | tee log${K}.out; done
 grep -h CV log*.out
 
 5 plotting:
-To make plotting easier, we can make a file with the individual names in one column and the species names in the second column. As the species name is in the individual name, it is very easy to extract the species name from the individual name:
+To make plotting easier, we can make a file with the individual names in one column and the species names in the second column. 
+As the species name is in the individual name, it is very easy to extract the species name from the individual name.
 awk '{split($1,name,"."); print $1,name[2]}' ${FILE}.nosex > $FILE.list
