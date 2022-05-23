@@ -1,0 +1,42 @@
+1, map short reads of each strain against the reference genome
+bwa-mem2 mem -R '{params.rg}' -t {config[bwa_mapT]} {config[bwa_ref_fa]} {input.r1} {input.r2} | samtools sort -O BAM -@ {config[bwa_sortT]} -o {output.bam}
+
+
+picard MarkDuplicates -I {input.inbam} -O {output.outbam} -M {output.metrics} --REMOVE_DUPLICATES true
+
+
+samtools merge -@ {config[sam_mergeT]} {output.mergedbam} {params}
+
+
+
+samtools faidx {config[bwa_ref_fa]}
+
+
+freebayes-parallel <(fasta_generate_regions.py {input.fai} 100000) {config[freebayesT]} -f {config[bwa_ref_fa]} {input.mergedbam} > {output.vcf}
+
+
+SNPs quality filtering:
+vcftools --gzvcf SNP_15pchon.vcf.gz --remove-indels --max-missing 0.9 --minQ 30 --min-meanDP 10 --max-meanDP 120 --minDP 10 --maxDP 120 --recode --stdout | gzip -c > full_filtered.vcf.gz
+
+
+To split vcf depending on samples:
+gunzip file.vcf.gz
+bgzip file.vcf
+tabix -p vcf file.vcf.gz
+
+for file in {file.vcf}; do
+
+  for sample in `bcftools view -h $file | grep "^#CHROM" | cut -f10-`; do
+
+    bcftools view -c1 -Oz -s $sample -o ${file/.vcf*/.$sample.vcf.gz} $file
+
+  done
+
+done
+
+
+Count SNP num:
+bcftools view -H S1_3_SNP.vcf | wc -l
+
+Count homo and hetero SNPs
+plink2 --vcf file.vcf.gz --out  --sample-counts cols=hom,het --allow-extra-chr
