@@ -1,19 +1,43 @@
 1, Convert vcf to bed:
-* Plink bed file is a binary biallelic genotype table
-* --geno 0.999 means removing all loci where more than 99.9% of genotypes are missing
+Plink bed file is a binary biallelic genotype table
+--geno 0.999 means removing all loci where more than 99.9% of genotypes are missing
+
+'''
 plink --vcf nolowcovflt_S3_1.vcf.gz --make-bed --geno 0.999 --allow-extra-chr --out geno999
+'''
 
 2, ADMIXTURE does not accept chromosome names that are not human chromosomes. We will thus just exchange the first column to 0
+
+'''
 awk '{$1="0";print $0}' $FILE.bim > $FILE.bim.tmp
 mv $FILE.bim.tmp $FILE.bim
+'''
 
 3, To find the best K clusters(ancestry):
-for K in 1 2 3 4 5; \ do admixture --cv {name}.bed $K | tee log${K}.out; done 
 
-4, To see Corss validation errors: 
+'''
+for K in 1 2 3 4 5; \ do admixture --cv {name}.bed $K | tee log${K}.out; done 
+'''
+
+4, To see corss validation errors: 
+
+'''
 grep -h CV log*.out
+'''
 
 5 plotting:
 To make plotting easier, we can make a file with the individual names in one column and the species names in the second column. 
 As the species name is in the individual name, it is very easy to extract the species name from the individual name.
+
+'''
 awk '{split($1,name,"."); print $1,name[2]}' ${FILE}.nosex > $FILE.list
+'''
+
+Plotting with a R script.It requires four arguments, the prefix for the ADMIXTURE output files (-p ), 
+the file with the species information (-i ), the maximum number of K to be plotted (-k 5), 
+and a list with the populations or species separated by commas (-l <pop1,pop2...>).
+
+'''
+wget https://github.com/speciationgenomics/scripts/raw/master/plotADMIXTURE.r
+Rscript plotADMIXTURE.r -p geno999 -i geno999.list -k 5 -l TU21,IT36,TU788,S16_01,S3_1,IT32,S5_1,S1_3,S4_1,S16_04,S16_10,S16_07,S7_3,S6_1,S16_02
+'''
