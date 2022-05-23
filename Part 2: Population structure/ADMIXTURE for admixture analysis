@@ -1,3 +1,6 @@
+Plink v1.90b6.21 64-bit (19 Oct 2020)
+ADMIXTURE v1.3.0
+
 1, Convert vcf to bed:
 Plink bed file is a binary biallelic genotype table
 --geno 0.999 means removing all loci where more than 99.9% of genotypes are missing
