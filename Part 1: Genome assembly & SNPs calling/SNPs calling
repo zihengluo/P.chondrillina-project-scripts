@@ -1,10 +1,13 @@
-1, map short reads of each strain against the reference genome
+1, map short reads of each strain against the reference genome and obtain the statistic summary of the alignments
 
 '''
-bwa-mem2 mem -R r"@RG\tID:{sample}\tSM:{sample}\tPL:ILLUMINA\tLB:{sample}_lib1" -t 12 genome.fasta read1.fq read2.fq | samtools sort -O BAM -@ 12 -o output.bam
+bwa-mem2 mem -R r"@RG\tID:{sample}\tSM:{sample}\tPL:ILLUMINA\tLB:{sample}_lib1" -t 12 genome.fasta read1.fq read2.fq | samtools sort -O BAM -@ 12 -o output.bam -'
+&& samtools index -@ 12 output.bam
+
+samtools stats -@ 12 input.bam} > output.samstats"
 '''
 
-2, remove PCR duplicates from the alignment bam file
+2, remove PCR duplicates from the alignment bam files
 
 '''
 picard MarkDuplicates -I input.bam -O output.bam -M output.metrics --REMOVE_DUPLICATES true
