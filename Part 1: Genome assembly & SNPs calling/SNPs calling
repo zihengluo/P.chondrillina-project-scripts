@@ -1,29 +1,41 @@
 1, map short reads of each strain against the reference genome
-bwa-mem2 mem -R '{params.rg}' -t {config[bwa_mapT]} {config[bwa_ref_fa]} {input.r1} {input.r2} | samtools sort -O BAM -@ {config[bwa_sortT]} -o {output.bam}
 
+'''
+bwa-mem2 mem -R r"@RG\tID:{sample}\tSM:{sample}\tPL:ILLUMINA\tLB:{sample}_lib1" -t 12 genome.fasta read1.fq read2.fq | samtools sort -O BAM -@ 12 -o output.bam
+'''
 
-picard MarkDuplicates -I {input.inbam} -O {output.outbam} -M {output.metrics} --REMOVE_DUPLICATES true
+2, remove PCR duplicates from the alignment bam file
 
+'''
+picard MarkDuplicates -I input.bam -O output.bam -M output.metrics --REMOVE_DUPLICATES true
+'''
 
-samtools merge -@ {config[sam_mergeT]} {output.mergedbam} {params}
+3, merge the alignment bam files, for example, merging three files:
 
+'''
+samtools merge -@ 12 output.merged.bam alignment1.bam alignment2.bam alignment3.bam 
+'''
 
+4, Index the reference genome and use freebayes to generate SNPs:
 
+'''
 samtools faidx {config[bwa_ref_fa]}
 
+freebayes-parallel <(fasta_generate_regions.py genome.fai 100000) 20 -f genome.fa input.merged.bam > output.vcf
+'''
 
-freebayes-parallel <(fasta_generate_regions.py {input.fai} 100000) {config[freebayesT]} -f {config[bwa_ref_fa]} {input.mergedbam} > {output.vcf}
+5, SNPs quality filtering:
+vcftools --gzvcf input.vcf.gz --remove-indels --max-missing 0.9 --minQ 30 --min-meanDP 10 --max-meanDP 120 --minDP 10 --maxDP 120 --recode --stdout | gzip -c > filtered.vcf.gz
 
+6, Count SNP num in vcf file:
 
-SNPs quality filtering:
-vcftools --gzvcf SNP_15pchon.vcf.gz --remove-indels --max-missing 0.9 --minQ 30 --min-meanDP 10 --max-meanDP 120 --minDP 10 --maxDP 120 --recode --stdout | gzip -c > full_filtered.vcf.gz
+'''
+bcftools view -H S1_3_SNP.vcf | wc -l
+'''
 
+7, To split vcf depending on samples:
 
-To split vcf depending on samples:
-gunzip file.vcf.gz
-bgzip file.vcf
-tabix -p vcf file.vcf.gz
-
+'''
 for file in {file.vcf}; do
 
   for sample in `bcftools view -h $file | grep "^#CHROM" | cut -f10-`; do
@@ -33,10 +45,10 @@ for file in {file.vcf}; do
   done
 
 done
+'''
 
+8, Count homo and hetero SNPs:
 
-Count SNP num:
-bcftools view -H S1_3_SNP.vcf | wc -l
-
-Count homo and hetero SNPs
+'''
 plink2 --vcf file.vcf.gz --out  --sample-counts cols=hom,het --allow-extra-chr
+'''
