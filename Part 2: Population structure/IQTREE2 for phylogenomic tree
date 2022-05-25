@@ -30,10 +30,10 @@ You can use option -st DNA to override this (incorrect) auto-detection.GTR+ASC m
 
 # -B 1000: ultrafast bootstrap approximation (UFBoot) with 1,000 replicates 
 
-# -alrt 1000: likelihood-ratio tests (aLRT) with 1,000 replicates 
+# -alrt 0: approximate likelihood ratio test  (aLRT)
 
 # -nt thread number
 
 '''
-iqtree -s myfile.phy -m GTR+ASC -st DNA  -B 1000 -alrt 1000  -nt 16
+iqtree -s myfile.phy -m GTR+ASC -st DNA  -B 1000 -alrt 0  -nt 16
 '''
