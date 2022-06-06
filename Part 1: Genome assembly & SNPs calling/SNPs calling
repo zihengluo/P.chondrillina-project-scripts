@@ -1,3 +1,5 @@
+# The SNPs calling steps from 1 to 4 was run through the pipeline writen by Rita Tam in Schwessinger's lab. 
+
 1, map short reads of each strain against the reference genome and obtain the statistic summary of the alignments
 
 '''
