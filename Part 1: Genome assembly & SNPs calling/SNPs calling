@@ -30,7 +30,7 @@ freebayes-parallel <(fasta_generate_regions.py genome.fai 100000) 20 -f genome.f
 '''
 
 5, SNPs quality filtering:
-vcftools --gzvcf input.vcf.gz --remove-indels --max-missing 0.9 --minQ 30 --min-meanDP 10 --max-meanDP 120 --minDP 10 --maxDP 120 --recode --stdout | gzip -c > filtered.vcf.gz
+vcftools --gzvcf input.vcf.gz --remove-indels --max-missing 0.9 --minQ 30 --maxDP 120 --recode --stdout | gzip -c > filtered.vcf.gz
 
 6, Count SNP num in vcf file:
 
