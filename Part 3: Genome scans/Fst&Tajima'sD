@@ -33,7 +33,7 @@ awk -F $'\t' 'BEGIN{OFS=FS}{print $0,"20kb"}' \
 # combine the sliding window with Fst values
 bedtools intersect \
 -a windows_20kb.bed  \
--b pop23_fst.bed  -wa -wb \
+-b pop12_fst.bed  -wa -wb \
 >windows_fst.tab
 
 # calcuate the mean Fst value in each window
