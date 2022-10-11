@@ -43,6 +43,9 @@ groupBy -i - \
 -c 9 \
 -o mean > windows_mean_fst.tab
 
+# calculate mean fast value
+awk '{ total += $5 } END { print total/NR }' yourFile.whatever
+
 # calculate Tajima's D in each subpopulation, use subpop.txt to specify which subpopulation is being calculated
 # Sliding window size is 20kb.
 Vcftools —vcf file.vcf —keep subpop.txt —recode
