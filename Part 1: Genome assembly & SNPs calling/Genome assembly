@@ -131,6 +131,14 @@ wget "ftp://ftp.ncbi.nlm.nih.gov/blast/db/nt.??.tar.gz" -P nt/ && \
         done
 '''
 
+download taxdump database:
+
+'''
+wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz -P data/
+tar zxf data/taxdump.tar.gz -C data/ nodes.dmp names.dmp
+./blobtools nodesdb --nodes data/nodes.dmp --names data/names.dmp
+'''
+
 blastn on assembly:
 
 '''
