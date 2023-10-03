@@ -106,7 +106,7 @@ Version: Hapo-g 1.2
 7, statistic summary of assembly
 
 '''
-ststs.sh in=assembly.fasta
+stats.sh in=assembly.fasta
 '''
 
 Version: bbmap 38.93
